@@ -10,14 +10,23 @@ Please contact Lin Qiu(lqiu@apex.sjtu.edu.cn) for questions and suggestions.
 Python 3.6
 
 Python packages
+
 tensorflow==1.0.0
+
 Jinja2==2.9.5
+
 MarkupSafe==0.23
+
 numpy==1.12.0
+
 protobuf==3.2.0
+
 six==1.10.0
+
 tensorflow-gpu==1.0.0
+
 tqdm==4.11.2
+
 nltk==3.2.1
 
 ## Datasets
