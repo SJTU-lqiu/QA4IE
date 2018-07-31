@@ -31,7 +31,7 @@ nltk==3.2.1
 
 ## Datasets
 
-We provide the [QA4IE Benchmark](https://drive.google.com/file/d/12dZQqDTNY0pSpJKkLG6JWgGcEqQu2PkZ/view) in our paper. It is a document level IE benchmark in a readable text format very similar to [SQuAD](https://rajpurkar.github.io/SQuAD-explorer/). You shold download and unzip this file to ``$Home/data``.
+We provide the [QA4IE Benchmark](https://drive.google.com/file/d/12dZQqDTNY0pSpJKkLG6JWgGcEqQu2PkZ/view) in our paper. It is a document level IE benchmark in a readable text format very similar to [SQuAD](https://rajpurkar.github.io/SQuAD-explorer/). You should download and unzip this file to ``$Home/data``.
 
 To run our code, you need to download [GloVe](http://nlp.stanford.edu/data/glove.6B.zip) for pre-trained word embedding and NLTK for tokenizer. You can run ``download.sh`` to download these two datasets to ``$Home/data``.
 
