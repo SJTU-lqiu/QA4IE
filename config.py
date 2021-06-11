@@ -1,3 +1,4 @@
+from collections import defaultdict
 import os
 import argparse
 
@@ -11,7 +12,7 @@ def get_args():
     parser.add_argument("--seed", type=int, default=442)
     parser.add_argument("--out_base_dir", type=str, default="out")
     parser.add_argument("--orig_data_dir", type=str, default='data/orig_data')
-    parser.add_argument("--data_dir", type=str, default="data/spanS")
+    parser.add_argument("--data_dir", type=str, default="data/span")
 
     # prepro
     parser.add_argument("--glove_path", type=str, default="data/glove/glove.6B.100d.txt")
@@ -40,6 +41,7 @@ def get_args():
     parser.add_argument("--char_emb_size", type=int, default=8)
     parser.add_argument("--out_channels", type=str, default="100")
     parser.add_argument("--kernel_sizes", type=str, default="5")
+    parser.add_argument("--ss_feature_size", type=int, default=40)
     #TODO finetune glove
     parser.add_argument("--num_highway_layers", type=int, default=2)
     parser.add_argument("--num_modeling_layers", type=int, default=1)
@@ -49,7 +51,7 @@ def get_args():
     # data
     parser.add_argument("--word_count_th", type=int, default=100)
     parser.add_argument("--char_count_th", type=int, default=500)
-    parser.add_argument("--sent_size_th", type=int, default=500)
+    parser.add_argument("--sent_size_th", type=int, default=400)
     parser.add_argument("--ques_size_th", type=int, default=30)
     parser.add_argument("--word_size_th", type=int, default=16)
     parser.add_argument("--lower_word", action="store_true")
