@@ -65,26 +65,14 @@ def dumpQA_features(config, model, data, loader, split='train'):
         pred = [x[i] for i in output[f['id']]]
         gts = list(map(lambda x: x['text'], data.data[ai]['qas'][qi]['a']))
         pred_text = ' '.join(pred)
-        em = metric_max_over_ground_truths(exact_match_score, pred_text, gts)
+        if f['id'].startswith('ieneg'):
+            em = False
+        else:
+            em = metric_max_over_ground_truths(exact_match_score, pred_text, gts)
 
         out_dict[(ai, qi)] = (pred, em)
     
     torch.save(out_dict, os.path.join(config.out_dir, f'{split}.QA.pt'))
-
-
-def dumpSS(config):
-    model = QA4IESS(config).to(0)
-    model.load_state_dict(torch.load(os.path.join(config.out_dir, 'model.pt')))
-    model.eval()
-
-    ss_filter = get_ss_filter(config)
-    ss_collate_fn = get_ss_collate_fn(config)
-
-    for tag in ['train', 'dev', 'test']:
-        data = json.load(open(os.path.join(config.data_dir, f'{tag}.json')))
-        data = SSDataset(data, ss_filter)
-        loader = DataLoader(data, config.eval_batch_size, shuffle=False, collate_fn=ss_collate_fn)
-        dumpSS_features(config, model, data, loader, tag)
 
 
 def getSS_data(config, split='train'):
@@ -108,8 +96,9 @@ def getQA_data(config, split='train'):
     return data, loader
 
 
-def dump(config, model, data_fn, dump_fn):
-    for split in ['ietest']:
+def dump(config, model, data_fn, dump_fn, splits):
+    # for split in ['ietrain', 'iedev' 'ietest']:
+    for split in splits:
     # for split in ['train', 'dev', 'test']:
         data, loader = data_fn(config, split)
         dump_fn(config, model, data, loader, split)
@@ -124,13 +113,15 @@ if __name__ == "__main__":
         model = QA4IESS(config).to(0)
         data_fn = getSS_data
         dump_fn = dumpSS_features
+        splits = ['train', 'dev', 'test', 'ietrain', 'iedev', 'ietest']
     elif config.model == 'QA':
         model = QA4IEQA(config).to(0)
         data_fn = getQA_data
         dump_fn = dumpQA_features
+        splits = ['ietrain', 'iedev', 'ietest']
     else:
         raise NotImplementedError(f'dump function for {config.model} is not implemented')
     
     model.load_state_dict(torch.load(os.path.join(config.out_dir, 'model.pt')))
     model.eval()
-    dump(config, model, data_fn, dump_fn)
+    dump(config, model, data_fn, dump_fn, splits)

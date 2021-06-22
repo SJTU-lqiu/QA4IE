@@ -7,12 +7,13 @@ def get_args():
     parser = argparse.ArgumentParser()
     
     # names and directories
-    parser.add_argument("--name", type=str, default="qa4ie")
+    parser.add_argument("--name", type=str, default="QA4IE")
     parser.add_argument("--model", type=str, default="QA")
     parser.add_argument("--seed", type=int, default=442)
     parser.add_argument("--out_base_dir", type=str, default="out")
     parser.add_argument("--orig_data_dir", type=str, default='data/orig_data')
     parser.add_argument("--data_dir", type=str, default="data/span")
+    parser.add_argument('--mode', type=str, default='train')
 
     # prepro
     parser.add_argument("--glove_path", type=str, default="data/glove/glove.6B.100d.txt")
@@ -32,6 +33,9 @@ def get_args():
     parser.add_argument("--dropout", type=float, default=0.2)
     parser.add_argument("--log_period", type=int, default=100)
     parser.add_argument("--eval_period", type=int, default=10000)
+    
+    # inference
+    parser.add_argument("--scorer", type=str, default='mean', help="scorer for QA output [mean | prod | AT]")
 
     # model
     parser.add_argument("--hidden_size", type=int, default=100)
@@ -42,10 +46,8 @@ def get_args():
     parser.add_argument("--out_channels", type=str, default="100")
     parser.add_argument("--kernel_sizes", type=str, default="5")
     parser.add_argument("--ss_feature_size", type=int, default=40)
-    #TODO finetune glove
     parser.add_argument("--num_highway_layers", type=int, default=2)
     parser.add_argument("--num_modeling_layers", type=int, default=1)
-    # EMA Var
     parser.add_argument("--max_decode_length", type=int, default=64)
 
     # data

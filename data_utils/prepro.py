@@ -72,8 +72,8 @@ def prepro_orig(config):
             return
 
         data_out = []
-        # for file_size in ['0-400', '400-700', '700-']:
-        for file_size in ['0-400']:
+        for file_size in ['0-400', '400-700', '700-']:
+        # for file_size in ['0-400']:
             in_path = os.path.join(
                 config.orig_data_dir, config.data_type, file_size, 
                 f"{split}.{config.data_type}.json"

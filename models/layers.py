@@ -69,22 +69,9 @@ class Embedding(nn.Module):
         """
         # [N, Lc, W, dc]  [N, Lq, W, dc]
         c_ctx, c_q = self.char_emb(char_context), self.char_emb(char_query)
-        # print(self.char_cnn.conv_layers[0].conv.weight)
-        # exit(0)
-        # print(c_ctx.mean(dim=-1))
-        # print(c_q.mean(dim=-1))
-        # print(c_ctx.min(), c_q.min(), c_ctx.max(), c_q.max())
         c_ctx, c_q = self.char_cnn(c_ctx), self.char_cnn(c_q)  # [N, Lc, dco]  [N, Lq, dco]
-        # print(c_ctx.min(), c_q.min(), c_ctx.max(), c_q.max())
-        # exit(0)
-        # print(c_ctx.mean(dim=-1))
-        # print(c_q.mean(dim=-1))
         # [N, Lc, d]  [N, Lq, d]
         ctx, q = self.word_emb(context), self.word_emb(query)
-        # print(ctx.mean(dim=-1))
-        # print(q.mean(dim=-1))
-        # print()
-        # exit(0)
         ctx, q = torch.cat([c_ctx, ctx], dim=-1), torch.cat([c_q, q], dim=-1)
         
         return ctx, q
@@ -162,8 +149,6 @@ class BiAttentionFlow(nn.Module):
 
         # c2q attention
         c2q_attention = S.softmax(dim=-1)
-        # print(c2q_attention[0])
-        # print(c2q_attention[1])
         u = (c2q_attention.unsqueeze(-1) * q_aug).sum(dim=2)  # [N, Lc, 2d]
         # q2c attention
         q2c_attention = S.max(dim=-1, keepdim=True).values.softmax(dim=1)  # [N, Lc, 1]
@@ -182,7 +167,7 @@ class SelfMatching(nn.Module):
         self.tanh = nn.Tanh()
         self.linear3 = nn.Linear(dim, 1)
         self.dropout = nn.Dropout(dropout)
-        self.lstm = nn.LSTM(4 * dim, dim, batch_first=True, bidirectional=True)
+        self.lstm = RNNPackWrapper(nn.LSTM(4 * dim, dim, batch_first=True, bidirectional=True))
 
     def forward(self, x, x_mask):
         """
@@ -194,10 +179,10 @@ class SelfMatching(nn.Module):
         S = self.linear3(self.tanh(aug_x)).squeeze(-1)  # [N, Lc, Lc]
         # add mask
         S = S + (1 - x_mask.unsqueeze(1).float()) * NEG_INF
-        S.softmax(dim=-1)
+        S = S.softmax(dim=-1)
         C = (S.unsqueeze(-1) * x.unsqueeze(1)).sum(dim=2)  # [N, Lc, 2d]
         C_aug = torch.cat([x, C], dim=-1)  # [N, Lc, 4d]
-        out, final_state = self.lstm(self.dropout(C_aug))  # [N, Lc, 2d]
+        out, final_state = self.lstm(self.dropout(C_aug), x_mask)  # [N, Lc, 2d]
 
         h, c = final_state
         h, c = h.transpose(0, 1).reshape(h.size(1), -1), c.transpose(0, 1).reshape(c.size(1), -1)

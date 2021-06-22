@@ -10,4 +10,5 @@ python3 train.py \
     --lr 1e-3 \
     --dropout 0.2 \
     --eval_period 1000000 \
-    --sent_size_th 400
+    --sent_size_th 400 \
+    --mode test

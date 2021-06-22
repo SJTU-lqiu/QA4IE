@@ -1,9 +1,9 @@
 """python inline script for squad style evaluation"""
-from re import T
 import string
 from collections import Counter
 import re
 import torch
+from matplotlib import pyplot as plt
 
 
 def normalize_answer(s):
@@ -80,11 +80,12 @@ def evaluate_pr(dataset, predictions):
     total = 0
     for article in dataset:
         for qa in article['qas']:
-            total += 1
             qaid, answers = qa['id'], qa['a']
+            if not qaid.startswith('ieneg'):
+                total += 1
             if qaid not in predictions:
                 continue
-            if qaid.startswith('ietest'):
+            if qaid.startswith('ieneg'):
                 tps.append(0)
                 scores.append(predictions[qaid][1])
             else:
@@ -102,10 +103,12 @@ def evaluate_pr(dataset, predictions):
     positive = torch.arange(len(tps)).to(tps) + 1
     prec = tps / positive
     rec = tps / total
+    plt.plot(rec, prec)
+    plt.savefig('pr.png')
     f1s = 2 * prec * rec / (prec + rec)
     f1s[f1s.isnan()] = 0.
     maxf1, maxi = f1s.max(dim=0)
 
-    return maxf1, prec, rec
+    return maxf1, prec[maxi].float(), rec[maxi].float()
 
 
