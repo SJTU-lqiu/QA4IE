@@ -1,4 +1,12 @@
 # Pytorch Version QA4IE Code (Journal Version)
+Here is the original implementation for the following series of publications on QA4IE.
+
+- ISWC 2018: [QA4IE: A Question Answering based Framework for Information Extraction](https://link.springer.com/chapter/10.1007/978-3-030-00671-6_12)
+- IEEE Access 2020: [QA4IE: A Question Answering based System for Document-Level General Information Extraction](https://ieeexplore.ieee.org/abstract/document/8972460)
+- SIGIR DEMO 2020: [QuAChIE: Question Answering based Chinese Information Extraction System](https://dl.acm.org/doi/abs/10.1145/3397271.3401411)
+
+This branch mantains the code for the journal version QA4IE. The ISWC conference version is maintained in [iswc](https://github.com/SJTU-lqiu/QA4IE/tree/iswc) branch. The chinese benchmark and the corresponding code will also be released soon.
+
 ## Requirements
 - torch = 1.7.1
 - wandb
@@ -18,6 +26,9 @@ Evaluate in IE-setting with different types of scorer:
 - AT: use the output of the AT module as the score
 
 ```python3 eval_ie.py --scorer <mean|prod|AT>```
+
+## Issues on Experimental Results
+- Note that the results obtained by running the code in this repo will be slightly better than the results reported in the paper. The main reasons are the usage of a more proper optimizer, a larger batch size, and a learning rate scheduler in the new implementation.
 
 ## Cite Us
 
@@ -39,5 +50,13 @@ Evaluate in IE-setting with different types of scorer:
   pages={29677--29689},
   year={2020},
   publisher={IEEE}
+}
+
+@inproceedings{ru2020quachie,
+  title={QuAChIE: Question Answering based Chinese Information Extraction System},
+  author={Ru, Dongyu and Wang, Zhenghui and Qiu, Lin and Zhou, Hao and Li, Lei and Zhang, Weinan and Yu, Yong},
+  booktitle={Proceedings of the 43rd International ACM SIGIR Conference on Research and Development in Information Retrieval},
+  pages={2177--2180},
+  year={2020}
 }
 ```
